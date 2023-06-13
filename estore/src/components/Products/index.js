@@ -1,59 +1,53 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './_products.scss'
+import { useDispatch, useSelector } from 'react-redux'
+import productSlice from '../../Redux/Products/productSlice'
+import { getProducts } from '../../Redux/Products/productActions'
+import { addCartItem } from '../../Redux/Cart/cartSlice'
+import { Link } from 'react-router-dom'
 
 const Products = () => {
- const productData = [
-    {
-      pName: 'Jacket',
-      price: 45,
-      img: 'shop-1.jpg',
-    },
-    {
-      pName: 'Purse',
-      price: 50,
-      img: 'shop-2.jpg',
-    },
-    {
-      pName: 'Dress',
-      price: 38,
-      img: 'shop-3.jpg',
-    },
-    {
-      pName: 'Denim',
-      price: 42,
-      img: 'shop-4.jpg',
-    },
-    {
-      pName: 'Boots',
-      price: 65,
-      img: 'shop-5.jpg',
-    },
-    {
-      pName: 'Bag',
-      price: 35,
-      img: 'shop-6.jpg',
-    },
-  ]
+  const productData = useSelector(state => state.pr.products)
+  const cart = useSelector(state => state.cr)
+  const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(getProducts())
+  }, [])
+
+  const addToCart = (itemData) => {
+    const payload = { ...itemData, quantity: 1 }
+    dispatch(addCartItem(payload))
+  }
+  console.log(cart)
   return (
     <div className='products-container'>
       {productData.map((product, key) => {
         return (
           <div className='mx-5 p-3  product-card' key={key}>
-            <div className='product-image-container'>
-              <img src={require(`../../assets/images/shop/${product.img}`)} />
-            </div>
+            <Link to='/productDetails' state={product}>
+              <div className='product-image-container'>
+                <img src={require(`../../assets/images/shop/${product.product_img}`)} />
+              </div>
+            </Link>
             <div className='product-info'>
               <h5>
-                <a href='#'>{product.pName}</a>
+                <Link to='/productDetails' state={product}>{product.product_name}</Link>
               </h5>
               <p className='product-price'>{product.price}</p>
               <div className='product-rating'>
-                <i className='fa fa-star'/>
-                <i className='fa fa-star'/>
-                <i className='fa fa-star'/>
-                <i className='fa fa-star'/>
-                <i className='fa fa-star'/>
+                <i className='fa fa-star' />
+                <i className='fa fa-star' />
+                <i className='fa fa-star' />
+                <i className='fa fa-star' />
+                <i className='fa fa-star' />
+              </div>
+            </div>
+            <div className='my-3' onClick={() => addToCart(product)}>
+              <div className='cart-button'>
+                <div className='cart-icon-container'><i className='fa fa-shopping-cart mx-4' /></div>
+                <div className='cart-text-container mx-3'><p>Add to Cart</p></div>
+
               </div>
             </div>
           </div>
